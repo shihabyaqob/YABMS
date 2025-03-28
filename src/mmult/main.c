@@ -3,15 +3,22 @@
  * Main driver for the mmult benchmark.
  *
  * Author: Shihab Hasan
- * Date  : 2025-05-12
+ * Date  : 2025-05-27
  *
  * Description:
- *   This program parses command–line arguments to select the implementation
- *   (naive in this case) and matrix dimensions (M, N, P). It then allocates and
- *   initializes matrices A and B with random floating–point values, allocates
- *   matrix C for the result, and computes a golden reference using a simple
- *   reference computation. The chosen implementation is then run multiple times,
- *   timing each execution and finally verifying the result.
+ *   This program parses command-line arguments to select the matrix-matrix
+ *   multiplication implementation (naive or opt) and matrix dimensions (M, N, P).
+ *   It allocates and initializes matrices A and B with either random floating-point
+ *   values or data loaded from pre-generated datasets. Matrix C is used to store
+ *   the output, and a golden reference is computed or loaded for verification.
+ *
+ *   For the optimized (opt) implementation, the program accepts a block size (-b)
+ *   to enable blocked matrix multiplication for better cache performance.
+ *
+ *   The selected implementation is run multiple times (--nruns), execution time is
+ *   measured using high-resolution timing, and the results are validated and profiled.
+ *   Execution statistics (average, std. deviation, outliers) are reported, and
+ *   runtimes are saved to a CSV file for further analysis.
  */
 
 #include <stdio.h>
@@ -29,6 +36,8 @@
 #include "common/types.h"
 #include "include/types.h"
 #include "impl/naive.h"
+#include "impl/opt.h"
+
 
 /* Default matrix dimensions (can be overridden via command-line) */
 #define DEFAULT_M 16
@@ -81,6 +90,7 @@ int main(int argc, char** argv)
     int nruns = 1000;
     int nstdevs = 3;
     int nthreads = 1;
+    int blocksize = 16;
     int cpu = 0;
 
     bool help = false;
@@ -95,6 +105,9 @@ int main(int argc, char** argv)
             if (strcmp(argv[i], "naive") == 0) {
                 impl_ptr = impl_scalar_naive;
                 impl_str = "scalar_naive";
+            } else if (strcmp(argv[i], "opt") == 0) {
+                impl_ptr = impl_mmult_opt;
+                impl_str = "opt";
             } else {
                 impl_ptr = NULL;
                 impl_str = "unknown";
@@ -144,6 +157,12 @@ int main(int argc, char** argv)
             nthreads = atoi(argv[i]);
             continue;
         }
+        /* Block size */
+        if ((strcmp(argv[i], "-b") == 0) || (strcmp(argv[i], "--blocksize") == 0)) {
+            assert(++i < argc);
+            blocksize = atoi(argv[i]);
+            continue;
+        }
         /* CPU selection */
         if ((strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--cpu") == 0)) {
             assert(++i < argc);
@@ -175,6 +194,7 @@ int main(int argc, char** argv)
         printf("  -h | --help      Print this message\n");
         printf("  -d | --dataset   Load matrices & golden ref from file\n");
         printf("  -n | --nthreads  Number of threads (default = %d)\n", nthreads);
+        printf("  -b | --blocksize Block size for blocked matrix multiplication (default = %d)\n", blocksize);
         printf("  -c | --cpu       CPU (default = %d)\n", cpu);
         printf("  --nruns          Number of runs (default = %d)\n", nruns);
         printf("  --nstdevs        Std dev threshold (default = %d)\n", nstdevs);
@@ -289,6 +309,7 @@ int main(int argc, char** argv)
     args.P = P;
     args.cpu = cpu;
     args.nthreads = nthreads;
+    args.blocksize = blocksize;
 
     /* Run the chosen implementation multiple times */
     printf("Running \"%s\" implementation:\n", impl_str);

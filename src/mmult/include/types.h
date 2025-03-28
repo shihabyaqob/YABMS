@@ -23,6 +23,7 @@ typedef struct {
     int P;         /* Number of columns in matrix B and C */
     int cpu;       /* CPU identifier for affinity/scheduling */
     int nthreads;  /* Number of threads available */
+    int blocksize;  // <-- Add this for the "opt" implementation (blocked matrix multiplication)
 } args_t;
 
 #endif // __INCLUDE_TYPES_H_

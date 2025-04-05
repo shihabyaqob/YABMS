@@ -22,8 +22,7 @@
 #include "include/types.h"
 #include <math.h>
 
-#pragma GCC push_options
-#pragma GCC optimize ("O1")
+
 
 void* impl_mmult_opt(void* args) {
     args_t* parsed_args = (args_t*) args;
@@ -62,5 +61,3 @@ void* impl_mmult_opt(void* args) {
     }
     return NULL;
 }
-
-#pragma GCC pop_options

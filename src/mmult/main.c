@@ -3,7 +3,7 @@
  * Main driver for the mmult benchmark.
  *
  * Author: Shihab Hasan
- * Date  : 2025-05-27
+ * Date  : 2025-04-18
  *
  * Description:
  *   This program parses command-line arguments to select the matrix-matrix

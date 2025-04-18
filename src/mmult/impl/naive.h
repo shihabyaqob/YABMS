@@ -3,7 +3,7 @@
  * Header for the naive (scalar) implementation of mmult.
  *
  * Author: Shihab Hasan
- * Date  : 2025-05-12
+ * Date  : 2025-04-18
  */
 
 #ifndef __IMPL_NAIVE_H_

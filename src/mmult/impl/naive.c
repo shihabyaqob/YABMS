@@ -3,7 +3,7 @@
  * Naïve (scalar) matrix–matrix multiplication implementation.
  *
  * Author: Shihab Hasan
- * Date  : 2025-05-12
+ * Date  : 2025-04-18
  *
  * Description:
  *   This implementation multiplies matrix A (dimensions M×N) with matrix B (dimensions N×P)

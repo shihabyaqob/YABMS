@@ -1,7 +1,7 @@
 /* opt.h
  *
  * Author: Shiha Hasan
- * Date  : 2025-05-27
+ * Date  : 2025-04-18
  *
  * Header for scalar optimized function.
  */

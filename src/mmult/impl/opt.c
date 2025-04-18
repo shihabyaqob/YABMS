@@ -4,7 +4,7 @@
  * Optimized (blocked) matrix-matrix multiplication implementation.
  *
  * Author: Shihab Hasan
- * Date  : 2025-05-27
+ * Date  : 2025-04-18
  *
  * Description:
  *   This implementation performs matrix multiplication using a blocking strategy 
